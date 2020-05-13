@@ -5,7 +5,7 @@ import psycopg2 as pg
 import pandas.io.sql as psql
 
 
-class Pandas_DB_Wrangler:
+class Pandas_DB_Wrangler():
     """ 
     Helper class for querying databases using pandas.
     It's essential that the CONNECT_STRING be set for
