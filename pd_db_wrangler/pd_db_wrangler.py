@@ -61,9 +61,9 @@ class Pandas_DB_Wrangler:
         set_connection_string function.
         Valid DB_TYPE values: 'postgres', 'sqlite'
         """
-        if DB_TYPE == "postgres":
+        if self.DB_TYPE == "postgres":
             return self.fetch_from_postgres(sql)
-        elif DB_TYPE == "sqlite":
+        elif self.DB_TYPE == "sqlite":
             return self.fetch_from_sqlite(sql)
         else:
             return "Please specify db type (e.g. 'postgres', 'sqlite')"
