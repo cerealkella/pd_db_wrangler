@@ -47,6 +47,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/kellerjustin/pd_db_wrangler",
-    version="0.6.0",
+    version="version='0.7.0'",
     zip_safe=False,
 )
