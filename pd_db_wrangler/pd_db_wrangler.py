@@ -31,12 +31,16 @@ class Pandas_DB_Wrangler:
             self.CONNECT_STRING = f.readline().rstrip()
             return self.CONNECT_STRING
 
+    def read_text_file(self, filename):
+        """ Read Text from File """
+        with open(filename, "r") as myfile:
+            text = myfile.read()
+            myfile.close()
+        return text
+
     def read_sql_file(self, filename):
         """ Read SQL from File """
-        with open(filename, "r") as myfile:
-            sql = myfile.read()
-            myfile.close()
-        return sql
+        return self.read_text_file(filename)
 
     def fetch_from_postgres(self, sql):
         """ 
