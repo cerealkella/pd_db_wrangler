@@ -33,7 +33,7 @@ class Pandas_DB_Wrangler:
 
     def read_text_file(self, filename):
         """ Read Text from File """
-        with open(filename, "r") as myfile:
+        with open(filename, "r", encoding='utf-8-sig') as myfile:
             text = myfile.read()
             myfile.close()
         return text
