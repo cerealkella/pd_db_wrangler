@@ -14,7 +14,31 @@ History
 * Second release on PyPI. Fixes.
 
 
-0.3.0 - 0.7.0 (2020-05-13)
+0.3.0 (2020-05-13)
+------------------
+
+* Updates, etc. Various changes. IDK.
+
+
+0.4.0 (2020-05-13)
+------------------
+
+* Updates, etc. Various changes. IDK.
+
+
+0.5.0 (2020-05-13)
+------------------
+
+* Updates, etc. Various changes. IDK.
+
+
+0.6.0 (2020-05-13)
+------------------
+
+* Updates, etc. Various changes. IDK.
+
+
+0.7.0 (2020-05-13)
 ------------------
 
 * Updates, etc. Various changes. IDK.
