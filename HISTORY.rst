@@ -14,7 +14,13 @@ History
 * Second release on PyPI. Fixes.
 
 
-0.3.0 (2020-09-25)
+0.3.0 - 0.7.0 (2020-05-13)
+------------------
+
+* Updates, etc. Various changes. IDK.
+
+
+0.8.0 (2020-09-25)
 ------------------
 
 * Fix encoding issue when reading SQL files.
