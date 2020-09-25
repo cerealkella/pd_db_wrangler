@@ -12,3 +12,9 @@ History
 ------------------
 
 * Second release on PyPI. Fixes.
+
+
+0.3.0 (2020-09-25)
+------------------
+
+* Fix encoding issue when reading SQL files.
