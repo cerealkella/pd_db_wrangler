@@ -27,9 +27,12 @@ class Pandas_DB_Wrangler:
         valid db_types presently implemented: 'postgres', 'sqlite'
         """
         self.DB_TYPE = db_type.lower()
-        with open(filename, "r") as f:
-            self.CONNECT_STRING = f.readline().rstrip()
-            return self.CONNECT_STRING
+        if self.DB_TYPE == "postgres":
+            with open(filename, "r") as f:
+                self.CONNECT_STRING = f.readline().rstrip()
+        else:
+            self.CONNECT_STRING == filename
+        return self.CONNECT_STRING
 
     def read_text_file(self, filename):
         """ Read Text from File """
