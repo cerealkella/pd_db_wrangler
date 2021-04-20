@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/home/justin/.virtualenvs/jupyter/bin/python",
+    "python.pythonPath": "/home/justin/.virtualenvs/pd_db_wrangler_dev/bin/python",
     "restructuredtext.confPath": "${workspaceFolder}/docs",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,

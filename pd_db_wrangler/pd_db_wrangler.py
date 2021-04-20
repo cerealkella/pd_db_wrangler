@@ -45,23 +45,23 @@ class Pandas_DB_Wrangler:
         """ Read SQL from File """
         return self.read_text_file(filename)
 
-    def fetch_from_postgres(self, sql):
+    def fetch_from_postgres(self, sql, index_col=None, parse_dates=None):
         """ 
         Run SQL query on Postgres DB given SQL as a parameter
         """
         cnx = pg.connect(self.CONNECT_STRING)
-        df = pd.read_sql(sql, con=cnx)
+        df = pd.read_sql(sql, con=cnx, index_col=index_col, parse_dates=parse_dates)
         cnx.close()
         return df
 
-    def fetch_from_sqlite(self, sql):
+    def fetch_from_sqlite(self, sql, index_col=None, parse_dates=None):
         """ Run SQL query on SQLite DB given a db path & SQL """
         cnx = sqlite3.connect(self.CONNECT_STRING)
-        df = pd.read_sql_query(sql, con=cnx)
+        df = pd.read_sql_query(sql, con=cnx, index_col=index_col, parse_dates=parse_dates)
         cnx.close()
         return df
 
-    def df_fetch(self, sql):
+    def df_fetch(self, sql, index_col=None, parse_dates=None):
         """ 
         Run SQL query on a database with SQL as a parameter
         Please specify connect string and db type using the
@@ -69,8 +69,8 @@ class Pandas_DB_Wrangler:
         Valid DB_TYPE values: 'postgres', 'sqlite'
         """
         if self.DB_TYPE == "postgres":
-            return self.fetch_from_postgres(sql)
+            return self.fetch_from_postgres(sql, index_col=index_col, parse_dates=parse_dates)
         elif self.DB_TYPE == "sqlite":
-            return self.fetch_from_sqlite(sql)
+            return self.fetch_from_sqlite(sql, index_col=index_col, parse_dates=parse_dates)
         else:
             return "Please specify db type (e.g. 'postgres', 'sqlite')"
