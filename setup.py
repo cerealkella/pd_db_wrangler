@@ -35,7 +35,11 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     description="Pandas database helper library",
-    entry_points={"console_scripts": ["pd_db_wrangler=pd_db_wrangler.cli:main",],},
+    entry_points={
+        "console_scripts": [
+            "pd_db_wrangler=pd_db_wrangler.cli:main",
+        ],
+    },
     install_requires=requirements,
     license="MIT license",
     long_description=readme + "\n\n" + history,
