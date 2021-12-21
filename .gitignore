@@ -116,3 +116,5 @@ dmypy.json
 .postgres_cpsi_prod.txt
 .postgres_cpsi_report.txt
 creds.py
+
+.direnv
