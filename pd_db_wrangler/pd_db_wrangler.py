@@ -25,12 +25,14 @@ class Pandas_DB_Wrangler:
         '/path/to/sqlite.db'
         db_type must be set in order to use the df_fetch function
         valid db_types presently implemented: 'postgres', 'sqlite'
+        will default to sqlite if no datatype is explicitly specified
         """
         self.DB_TYPE = db_type.lower()
         if self.DB_TYPE == "postgres":
             with open(filename, "r") as f:
                 self.CONNECT_STRING = f.readline().rstrip()
         else:
+            self.DB_TYPE = "sqlite"
             self.CONNECT_STRING = filename
         return self.CONNECT_STRING
 
@@ -80,3 +82,24 @@ class Pandas_DB_Wrangler:
             )
         else:
             return "Please specify db type (e.g. 'postgres', 'sqlite')"
+
+    def verify_connection(self):
+        """ Verify Database Connection """
+        if self.DB_TYPE == "postgres":
+            try:
+                conn = pg.connect(self.CONNECT_STRING)
+                conn.close()
+                return True
+            except Exception as ex:
+                print(ex)
+                return False
+        elif self.DB_TYPE == "sqlite":
+            try:
+                cnx = sqlite3.connect(f'file:{self.CONNECT_STRING}?mode=rw', uri=True)
+                return True
+            except sqlite3.OperationalError as ex:
+                print(ex)
+                return False
+        else:
+            print("Please specify a valid db type!")
+            return False
