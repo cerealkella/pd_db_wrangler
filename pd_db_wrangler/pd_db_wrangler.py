@@ -25,11 +25,12 @@ class Pandas_DB_Wrangler:
 
     def set_connection_string(self, url):
         path = Path(url)
+        suffixes = (".db", ".gnucash", ".sqlite")
         if path.exists():
             datatype = mimetypes.guess_type(path)[0]
             if datatype == "text/plain":
                 return path.read_text(encoding="utf-8").strip()
-            elif datatype == "application/vnd.sqlite3" or path.suffix == ".gnucash":
+            elif datatype == "application/vnd.sqlite3" or path.suffix in suffixes:
                 return f"sqlite:///{path}"
         else:
             return url
