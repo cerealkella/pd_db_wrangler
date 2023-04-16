@@ -40,7 +40,7 @@ class Pandas_DB_Wrangler:
         path = Path(filename)
         return path.read_text(encoding="utf-8")
 
-    def df_fetch(self, sql, index_col=None, parse_dates=None):
+    def df_fetch(self, sql, index_col=None, parse_dates=None, dtype=None):
         """
         Run SQL query on a database with SQL as a parameter
         Please specify connect string and db type using the
@@ -48,5 +48,5 @@ class Pandas_DB_Wrangler:
         """
         with self.engine.begin() as conn:
             return pd.read_sql(
-                sql=text(sql), con=conn, index_col=index_col, parse_dates=parse_dates
+                sql=text(sql), con=conn, index_col=index_col, parse_dates=parse_dates, dtype=dtype
             )
