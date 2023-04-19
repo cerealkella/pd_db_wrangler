@@ -90,25 +90,9 @@ class Pandas_DB_Wrangler:
         """
         for key, value in locals().items():
             if key not in ("self", "timezone") and value is not None:
-                print(f"df_fetch key is {key}, value is {value}")
                 self.options[key] = value
-        """
-        for option in options:
-            try:
-                if parse_dates is None:
-                    parse_dates = self.options["parse_dates"]
-                if dtype is None:
-                    dtype = self.options("dtype")
-                if index_col is None:
-                    index_col = self.options("index_col")
-            except KeyError:
-                pass
-        """
         timezone = self.options.pop("timezone", None)
         self.options["sql"] = sql
-        self.fn_test(**self.options)
-
-        """
         with self.engine.begin() as conn:
             df = pd.read_sql(
                 sql=text(sql),
@@ -119,17 +103,4 @@ class Pandas_DB_Wrangler:
             )
         if timezone is not None:
             df = df.tz_convert(tz=timezone)
-
-        """
-
-    def fn_test(self, sql, index_col=None, parse_dates=None, dtype=None):
-        for key, value in locals().items():
-            print(f"fn_test key is {key}, value is {value}")
-        print(parse_dates)
-
-
-pdw = Pandas_DB_Wrangler()
-sql = pdw.read_sql_file("pd_db_wrangler/test_query.sql")
-print(pdw.options)
-
-pdw.df_fetch(sql, index_col="test override")
+        return df
