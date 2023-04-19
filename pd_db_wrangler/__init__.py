@@ -2,7 +2,7 @@
 
 __author__ = """Justin Keller"""
 __email__ = "kellerjustin@protonmail.com"
-__version__ = "__version__ = '0.22.0'"
+__version__ = "__version__ = '0.23.0'"
 
 
 from .pd_db_wrangler import Pandas_DB_Wrangler
