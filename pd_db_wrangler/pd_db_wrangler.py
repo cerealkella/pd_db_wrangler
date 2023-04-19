@@ -42,16 +42,13 @@ class Pandas_DB_Wrangler:
         Looks for comments in a SQL file to help pandas determine types.
         Example SQL comment:
         /*pandas*
-        [parse_dates]
+        timezone = "America/Chicago"
         parse_dates = { created_at = "%Y-%m-%d %h:%m:%s", updated_at = "%Y-%m-%d %h:%m:%s" }
-        [index_col]
         index_col = ["created_at"]
         [dtype]
         user_name = "string"
         user_id = "int64"
         created_at = "datetime64[ns, UTC]"
-        [timezone]
-        timezone = "America/Chicago"
         *pandas*/
 
         Args:
