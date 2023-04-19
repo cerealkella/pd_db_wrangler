@@ -28,12 +28,20 @@ class Pandas_DB_Wrangler:
 
     def timezone_setter(self, df, timezone):
         if "datetime" in str(df.index.dtype):
-            df = df.tz_localize(tz=timezone)
-        for date_col in self.options["parse_dates"].keys():
             try:
-                df[date_col] = df[date_col].dt.tz_localize(tz=timezone)
-            except (AttributeError, KeyError) as exception:
-                print(exception)
+                df = df.tz_localize(tz=timezone)
+            except TypeError as exception:
+                if "Already tz-aware" in str(exception):
+                    df = df.tz_convert(tz=timezone)
+        try:
+            for date_col in self.options["parse_dates"].keys():
+                try:
+                    df[date_col] = df[date_col].dt.tz_localize(tz=timezone)
+                except TypeError as exception:
+                    if "Already tz-aware" in str(exception):
+                        df[date_col] = df[date_col].dt.tz_convert(tz=timezone)
+        except (AttributeError, KeyError) as exception:
+            print(exception)
         return df
 
     def set_connection_string(self, url):
@@ -109,7 +117,9 @@ class Pandas_DB_Wrangler:
                 self.options[key] = value
         timezone = self.options.pop("timezone", None)
         with self.engine.begin() as conn:
-            df = pd.read_sql(con=conn, **self.options)
+            df = pd.read_sql(
+                con=conn, sql=text(self.options.pop("sql")), **self.options
+            )
             if timezone is not None:
                 df = self.timezone_setter(df, timezone)
             return df
