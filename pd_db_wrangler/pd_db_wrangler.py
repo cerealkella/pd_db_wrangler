@@ -24,6 +24,15 @@ class Pandas_DB_Wrangler:
         else:
             self.connect_string = ""
             self.engine = None
+    
+    def timezone_setter(df, timezone):
+        # TODO: change timezone of index?
+        for date in self.options["parse_dates"].values():
+            try:
+                df[date] = df[date].dt.tz_convert(tz=timezone)
+            except AttributeError:
+                pass
+        return df
 
     def set_connection_string(self, url):
         path = Path(url)
@@ -43,8 +52,10 @@ class Pandas_DB_Wrangler:
         Example SQL comment:
         /*pandas*
         timezone = "America/Chicago"
-        parse_dates = { created_at = "%Y-%m-%d %h:%m:%s", updated_at = "%Y-%m-%d %h:%m:%s" }
         index_col = ["created_at"]
+        [parse_dates]
+        created_at = "%Y-%m-%d %H:%M:%S"
+        updated_at = "%Y-%m-%d %H:%M:%S"
         [dtype]
         user_name = "string"
         user_id = "int64"
@@ -94,6 +105,6 @@ class Pandas_DB_Wrangler:
             self.options["sql"] = text(sql)
             self.options["con"] = conn
             df = pd.read_sql(**self.options)
-        if timezone is not None:
-            df = df.tz_convert(tz=timezone)
-        return df
+            if timezone is not None:
+                self.timezone_setter(df, timezone)
+            return df
