@@ -60,6 +60,7 @@ class Pandas_DB_Wrangler:
         toml_text = sql[
             sql.find(start := "/*pandas*") + len(start) : sql.find("*pandas*/")
         ]
+        toml_dict = {}
         try:
             toml_dict = tomli.loads(toml_text)
         except tomli.TOMLDecodeError:
