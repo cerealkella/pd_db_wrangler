@@ -90,15 +90,10 @@ class Pandas_DB_Wrangler:
             if key not in ("self", "timezone") and value is not None:
                 self.options[key] = value
         timezone = self.options.pop("timezone", None)
-        self.options["sql"] = sql
         with self.engine.begin() as conn:
-            df = pd.read_sql(
-                sql=text(sql),
-                con=conn,
-                index_col=index_col,
-                parse_dates=parse_dates,
-                dtype=dtype,
-            )
+            self.options["sql"] = text(sql)
+            self.options["con"] = conn
+            df = pd.read_sql(**self.options)
         if timezone is not None:
             df = df.tz_convert(tz=timezone)
         return df
