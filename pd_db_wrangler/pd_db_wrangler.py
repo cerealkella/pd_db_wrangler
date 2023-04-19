@@ -25,7 +25,7 @@ class Pandas_DB_Wrangler:
             self.connect_string = ""
             self.engine = None
     
-    def timezone_setter(df, timezone):
+    def timezone_setter(self, df, timezone):
         # TODO: change timezone of index?
         for date in self.options["parse_dates"].values():
             try:
