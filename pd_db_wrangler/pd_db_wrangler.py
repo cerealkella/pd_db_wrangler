@@ -18,20 +18,22 @@ class Pandas_DB_Wrangler:
 
     def __init__(self, connect_string=""):
         self.options = {}
+        self.sql = None
         if connect_string != "":
             self.connect_string = self.set_connection_string(connect_string)
             self.engine = create_engine(self.connect_string)
         else:
             self.connect_string = ""
             self.engine = None
-    
+
     def timezone_setter(self, df, timezone):
-        # TODO: change timezone of index?
-        for date in self.options["parse_dates"].values():
+        if "datetime" in str(df.index.dtype):
+            df = df.tz_localize(tz=timezone)
+        for date_col in self.options["parse_dates"].keys():
             try:
-                df[date] = df[date].dt.tz_convert(tz=timezone)
-            except AttributeError:
-                pass
+                df[date_col] = df[date_col].dt.tz_localize(tz=timezone)
+            except (AttributeError, KeyError) as exception:
+                print(exception)
         return df
 
     def set_connection_string(self, url):
@@ -49,6 +51,8 @@ class Pandas_DB_Wrangler:
     def pandas_toml_extractor(self, sql: str) -> str:
         """
         Looks for comments in a SQL file to help pandas determine types.
+        Specify date fields under [parse_dates]
+        Anything else needing special type handling should go under [dtype]
         Example SQL comment:
         /*pandas*
         timezone = "America/Chicago"
@@ -59,7 +63,7 @@ class Pandas_DB_Wrangler:
         [dtype]
         user_name = "string"
         user_id = "int64"
-        created_at = "datetime64[ns, UTC]"
+        amt = "float"
         *pandas*/
 
         Args:
@@ -81,9 +85,9 @@ class Pandas_DB_Wrangler:
     def read_sql_file(self, filename):
         """Read SQL from File"""
         path = Path(filename)
-        sql = path.read_text(encoding="utf-8")
-        self.options = self.pandas_toml_extractor(sql)
-        return sql
+        self.sql = path.read_text(encoding="utf-8")
+        self.options = self.pandas_toml_extractor(self.sql)
+        return self.sql
 
     def df_fetch(
         self,
@@ -98,13 +102,14 @@ class Pandas_DB_Wrangler:
         set_connection_string function.
         """
         for key, value in locals().items():
+            if key == "sql" and value != self.sql:
+                # new sql being passed in, re-initialize options
+                self.options = {}
             if key not in ("self", "timezone") and value is not None:
                 self.options[key] = value
         timezone = self.options.pop("timezone", None)
         with self.engine.begin() as conn:
-            self.options["sql"] = text(sql)
-            self.options["con"] = conn
-            df = pd.read_sql(**self.options)
+            df = pd.read_sql(con=conn, **self.options)
             if timezone is not None:
-                self.timezone_setter(df, timezone)
+                df = self.timezone_setter(df, timezone)
             return df
