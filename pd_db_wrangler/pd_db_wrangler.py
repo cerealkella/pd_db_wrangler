@@ -34,12 +34,20 @@ class Pandas_DB_Wrangler:
                 if "Already tz-aware" in str(exception):
                     df = df.tz_convert(tz=timezone)
         try:
-            for date_col in self.options["parse_dates"].keys():
-                try:
-                    df[date_col] = df[date_col].dt.tz_localize(tz=timezone)
-                except TypeError as exception:
-                    if "Already tz-aware" in str(exception):
-                        df[date_col] = df[date_col].dt.tz_convert(tz=timezone)
+            if isinstance(self.options["parse_dates"], dict):
+                date_list = self.options["parse_dates"].keys()
+            elif isinstance(self.options["parse_dates"], list):
+                date_list = self.options["parse_dates"]
+            elif isinstance(self.options["parse_dates"], str):
+                date_list = []
+                date_list.append(self.options["parse_dates"])
+            for date_col in date_list:
+                if date_col in df.columns.values.tolist():
+                    try:
+                        df[date_col] = df[date_col].dt.tz_localize(tz=timezone)
+                    except TypeError as exception:
+                        if "Already tz-aware" in str(exception):
+                            df[date_col] = df[date_col].dt.tz_convert(tz=timezone)
         except (AttributeError, KeyError) as exception:
             print(exception)
         return df
@@ -74,6 +82,13 @@ class Pandas_DB_Wrangler:
         amt = "float"
         *pandas*/
 
+        Examples of valid ways to pass in parse_dates:
+        parse_dates = ["created_at", "delete_comment_date", "edit_comment_date"]
+        [parse_dates]
+        created_at = "%Y-%m-%d %H:%M:%S"
+        updated_at = "%Y-%m-%d %H:%M:%S"
+        parse_dates = "created_date"
+
         Args:
             sql (str): SQL to parse
 
@@ -87,7 +102,8 @@ class Pandas_DB_Wrangler:
         try:
             toml_dict = tomli.loads(toml_text)
         except tomli.TOMLDecodeError:
-            print("No valid toml found in SQL")
+            # "No valid toml found in SQL"
+            pass
         return toml_dict
 
     def read_sql_file(self, filename):
