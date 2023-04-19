@@ -42,15 +42,16 @@ class Pandas_DB_Wrangler:
         Looks for comments in a SQL file to help pandas determine types.
         Example SQL comment:
         /*pandas*
-        [parse_date]
-        parse_dates = []
+        [parse_dates]
+        parse_dates = { created_at = "%Y-%m-%d %h:%m:%s", updated_at = "%Y-%m-%d %h:%m:%s" }
+        [index_col]
         index_col = ["created_at"]
         [dtype]
         user_name = "string"
         user_id = "int64"
         created_at = "datetime64[ns, UTC]"
         [timezone]
-        tz = "America/Chicago"
+        timezone = "America/Chicago"
         *pandas*/
 
         Args:
@@ -87,9 +88,11 @@ class Pandas_DB_Wrangler:
         Please specify connect string and db type using the
         set_connection_string function.
         """
-        options = ("parse_dates", "dtype", "index_col")
-
-        local_args = print(locals().keys())
+        for key, value in locals().items():
+            if key not in ("self", "timezone") and value is not None:
+                print(f"df_fetch key is {key}, value is {value}")
+                self.options[key] = value
+        """
         for option in options:
             try:
                 if parse_dates is None:
@@ -100,22 +103,33 @@ class Pandas_DB_Wrangler:
                     index_col = self.options("index_col")
             except KeyError:
                 pass
+        """
+        timezone = self.options.pop("timezone", None)
+        self.options["sql"] = sql
+        self.fn_test(**self.options)
 
+        """
         with self.engine.begin() as conn:
-            return pd.read_sql(
+            df = pd.read_sql(
                 sql=text(sql),
                 con=conn,
                 index_col=index_col,
                 parse_dates=parse_dates,
                 dtype=dtype,
             )
+        if timezone is not None:
+            df = df.tz_convert(tz=timezone)
+
+        """
+
+    def fn_test(self, sql, index_col=None, parse_dates=None, dtype=None):
+        for key, value in locals().items():
+            print(f"fn_test key is {key}, value is {value}")
+        print(parse_dates)
 
 
 pdw = Pandas_DB_Wrangler()
 sql = pdw.read_sql_file("pd_db_wrangler/test_query.sql")
-print(sql)
 print(pdw.options)
 
-parse_dates = pdw.options["parse_date"]
-dtype = pdw.options["dtype"]
-print(dtype)
+pdw.df_fetch(sql, index_col="test override")
