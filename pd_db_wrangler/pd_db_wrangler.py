@@ -26,7 +26,31 @@ class Pandas_DB_Wrangler:
             self.connect_string = ""
             self.engine = None
 
-    def timezone_setter(self, df, timezone):
+    def remove_whitespace_around_braces(self, text_to_process: str) -> str:
+        """
+        SQL Formatters like to pad inline braces with whitespace.
+        This function removes the whitespace in front of arguments
+
+        Args:
+            text (str): text string with potential whitespace around
+            braces
+
+        Returns:
+            str: text string with removed whitespace around braces
+        """
+        return text_to_process.replace("{ ", "{").replace(" }", "}")
+
+    def timezone_setter(self, df: pd.DataFrame, timezone: str) -> pd.DataFrame:
+        """Attempts to set the timezone on all specified date columns
+        in a dataframe
+
+        Args:
+            df (pd.DataFrame): dataframe to process
+            timezone (str): timezone
+
+        Returns:
+            pd.DataFrame: dataframe with timezones set
+        """
         if "datetime" in str(df.index.dtype):
             try:
                 df = df.tz_localize(tz=timezone)
@@ -104,7 +128,7 @@ class Pandas_DB_Wrangler:
             if len(toml_dict) > 0:
                 # valid toml found, remove it from the sql string
                 sql_list = self.sql.split(toml_text)
-                self.sql = ''.join(sql_list)
+                self.sql = "".join(sql_list)
         except tomli.TOMLDecodeError:
             # "No valid toml found in SQL"
             pass
@@ -115,6 +139,7 @@ class Pandas_DB_Wrangler:
         path = Path(filename)
         self.sql = path.read_text(encoding="utf-8")
         self.options = self.pandas_toml_extractor(self.sql)
+        self.sql = self.remove_whitespace_around_braces(self.sql)
         return self.sql
 
     def df_fetch(
