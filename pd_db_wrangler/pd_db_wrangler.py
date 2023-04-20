@@ -101,6 +101,10 @@ class Pandas_DB_Wrangler:
         toml_dict = {}
         try:
             toml_dict = tomli.loads(toml_text)
+            if len(toml_dict) > 0:
+                # valid toml found, remove it from the sql string
+                sql_list = self.sql.split(toml_text)
+                self.sql = ''.join(sql_list)
         except tomli.TOMLDecodeError:
             # "No valid toml found in SQL"
             pass
