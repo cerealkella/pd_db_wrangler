@@ -3,7 +3,7 @@ import mimetypes
 from pathlib import Path
 
 import pandas as pd
-import tomli
+import tomllib
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 
@@ -124,12 +124,12 @@ class Pandas_DB_Wrangler:
         ]
         toml_dict = {}
         try:
-            toml_dict = tomli.loads(toml_text)
+            toml_dict = tomllib.loads(toml_text)
             if len(toml_dict) > 0:
                 # valid toml found, remove it from the sql string
                 sql_list = self.sql.split(toml_text)
                 self.sql = "".join(sql_list)
-        except tomli.TOMLDecodeError:
+        except tomllib.TOMLDecodeError:
             # "No valid toml found in SQL"
             pass
         return toml_dict
