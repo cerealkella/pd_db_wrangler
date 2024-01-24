@@ -48,3 +48,9 @@ History
 ------------------
 
 * Fix encoding issue when reading SQL files.
+
+
+0.27.0 (2024-01-24)
+------------------
+
+* Refactored how init function works, tomllib for datatypes, etc
