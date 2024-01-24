@@ -53,4 +53,4 @@ History
 0.27.0 (2024-01-24)
 ------------------
 
-* Refactored how init function works, tomllib for datatypes, etc
+* All manner of fixing and built-in data type conversion.
