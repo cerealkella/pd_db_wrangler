@@ -134,6 +134,19 @@ class Pandas_DB_Wrangler:
             pass
         return toml_dict
 
+    def get_select_stmt(self, sql: str) -> str:
+        """Extract the select statement from SQL text
+
+        Args:
+            sql (str): Passed in SQL
+
+        Returns:
+            str: Select statement of clause
+        """
+        sql = str(sql).upper()
+        select = sql[sql.find(start := "SELECT ") + len(start) : sql.find("FROM ")]
+        return "SELECT " + select
+
     def read_sql_file(self, filename):
         """Read SQL from File"""
         path = Path(filename)
@@ -153,11 +166,15 @@ class Pandas_DB_Wrangler:
         Run SQL query on a database with SQL as a parameter
         Please specify connect string and db type using the
         set_connection_string function.
+
+        Do not re-initialize options unless the select statement changes
+        Sometimes where clause will be dynamically injected.
         """
         for key, value in locals().items():
-            if key == "sql" and value != self.sql:
-                # new sql being passed in, re-initialize options
-                self.options = {}
+            if key == "sql":
+                if self.get_select_stmt(value) != self.get_select_stmt(self.sql):
+                    # new sql being passed in, re-initialize options if select stmts differ
+                    self.options = {}
             if key not in ("self", "timezone") and value is not None:
                 self.options[key] = value
         timezone = self.options.pop("timezone", None)
