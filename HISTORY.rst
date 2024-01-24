@@ -48,9 +48,3 @@ History
 ------------------
 
 * Fix encoding issue when reading SQL files.
-
-
-0.27.0 (2024-01-24)
-------------------
-
-* All manner of fixing and built-in data type conversion.
