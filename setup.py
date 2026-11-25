@@ -13,7 +13,7 @@ with open("HISTORY.rst") as history_file:
 requirements = [
     "pandas",
     "sqlalchemy",
-    "psycopg2",
+    "psycopg2-binary",
 ]
 
 setup_requirements = []

@@ -8,6 +8,6 @@ coverage>=4.5.4
 Sphinx>=1.8.5
 twine>=1.14.0
 pandas>=1.5.3
-psycopg2>=2.9.5
+psycopg2-binary>=2.9.11
 pylint>=2.16.2
 sqlalchemy>=2.0.3
